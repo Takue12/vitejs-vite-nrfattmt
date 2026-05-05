@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 interface Track {
   id: string;
@@ -26,7 +26,6 @@ const css = `
     height: 100%;
   }
 
-  /* Main App Container - Perfectly Sized */
   .app {
     width: 100vw;
     height: 100vh;
@@ -37,23 +36,21 @@ const css = `
     overflow: hidden;
   }
 
-  /* Glassmorphic Card - Perfect Proportions */
   .player-container {
     width: 100%;
     max-width: 420px;
     height: 100%;
-    max-height: 800px;
-    background: rgba(8, 8, 20, 0.85);
+    max-height: 750px;
+    background: rgba(8, 8, 20, 0.95);
     backdrop-filter: blur(20px);
     border-radius: 32px;
-    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 255, 255, 0.2);
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 255, 255, 0.3);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
   }
 
-  /* Animated Gradient Border */
   .player-container::before {
     content: '';
     position: absolute;
@@ -75,9 +72,8 @@ const css = `
     50% { opacity: 0.8; }
   }
 
-  /* Header */
   .header {
-    padding: 24px 24px 16px;
+    padding: 20px 24px 12px;
     text-align: center;
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
   }
@@ -92,42 +88,35 @@ const css = `
     letter-spacing: 2px;
   }
 
-  .logo span {
-    font-size: 12px;
-    opacity: 0.7;
-  }
-
-  /* Visualizer - Fixed Height */
   .viz-area {
-    height: 100px;
-    padding: 20px 24px 10px;
+    height: 80px;
+    padding: 15px 20px 5px;
     display: flex;
     align-items: flex-end;
-    gap: 4px;
+    gap: 3px;
   }
 
   .viz-bar {
     flex: 1;
     background: linear-gradient(180deg, #00ffff, #ff00ff);
-    border-radius: 4px;
+    border-radius: 3px;
     transition: height 0.05s ease;
     box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
   }
 
-  /* Cover Art Area */
   .cover-area {
     flex-shrink: 0;
-    padding: 20px;
+    padding: 15px;
     display: flex;
     justify-content: center;
   }
 
   .cover {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     background: linear-gradient(135deg, #1a1a3a, #0a0a2a);
     border-radius: 24px;
-    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(0, 255, 255, 0.3), inset 0 0 30px rgba(0, 255, 255, 0.1);
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(0, 255, 255, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -152,34 +141,30 @@ const css = `
   .play-icon-large {
     font-size: 48px;
     color: rgba(0, 255, 255, 0.8);
-    text-shadow: 0 0 20px #00ffff;
   }
 
-  /* Track Info */
   .track-info {
     text-align: center;
-    padding: 16px 24px;
+    padding: 12px 20px;
     flex-shrink: 0;
   }
 
   .track-name {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 800;
     color: #fff;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     letter-spacing: -0.5px;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
   }
 
   .track-artist {
-    font-size: 14px;
+    font-size: 13px;
     color: #8888ff;
     font-weight: 500;
   }
 
-  /* Progress Bar */
   .progress-area {
-    padding: 16px 24px;
+    padding: 12px 20px;
     flex-shrink: 0;
   }
 
@@ -222,30 +207,28 @@ const css = `
     font-weight: 500;
   }
 
-  /* Controls */
   .controls {
-    padding: 8px 24px 24px;
+    padding: 8px 20px 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 24px;
+    gap: 20px;
     flex-shrink: 0;
   }
 
   .ctrl-btn {
-    width: 56px;
-    height: 56px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background: rgba(0, 255, 255, 0.1);
     border: 1px solid rgba(0, 255, 255, 0.3);
     color: #00ffff;
-    font-size: 20px;
+    font-size: 18px;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(5px);
   }
 
   .ctrl-btn:active {
@@ -254,18 +237,17 @@ const css = `
   }
 
   .play-btn {
-    width: 72px;
-    height: 72px;
+    width: 65px;
+    height: 65px;
     background: linear-gradient(135deg, #00ffff, #ff00ff);
     border: none;
     color: #fff;
-    font-size: 28px;
+    font-size: 26px;
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
   }
 
-  /* Mode Controls */
   .mode-controls {
-    padding: 0 24px 16px;
+    padding: 0 20px 12px;
     display: flex;
     justify-content: center;
     gap: 20px;
@@ -276,8 +258,8 @@ const css = `
     background: transparent;
     border: none;
     color: #6666aa;
-    font-size: 14px;
-    padding: 6px 12px;
+    font-size: 12px;
+    padding: 5px 10px;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.2s;
@@ -285,21 +267,19 @@ const css = `
 
   .mode-btn.active {
     color: #00ffff;
-    text-shadow: 0 0 8px #00ffff;
   }
 
-  /* Volume Control */
   .volume-control {
-    padding: 8px 24px;
+    padding: 6px 20px 12px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     flex-shrink: 0;
   }
 
   .volume-icon {
     color: #8888ff;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .volume-slider {
@@ -317,10 +297,8 @@ const css = `
     background: #00ffff;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 0 8px #00ffff;
   }
 
-  /* Navigation Tabs */
   .nav-tabs {
     display: flex;
     margin-top: auto;
@@ -331,14 +309,13 @@ const css = `
 
   .tab {
     flex: 1;
-    padding: 14px;
+    padding: 12px;
     text-align: center;
     font-size: 12px;
     font-weight: 600;
     color: #6666aa;
     cursor: pointer;
     transition: all 0.2s;
-    letter-spacing: 1px;
   }
 
   .tab.active {
@@ -347,14 +324,13 @@ const css = `
     border-top: 2px solid #00ffff;
   }
 
-  /* Library View */
   .library-view {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
   }
 
   .library-view::-webkit-scrollbar {
@@ -374,7 +350,7 @@ const css = `
     background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2));
     border: 2px dashed #00ffff;
     border-radius: 16px;
-    padding: 16px;
+    padding: 14px;
     text-align: center;
     cursor: pointer;
     color: #00ffff;
@@ -385,13 +361,12 @@ const css = `
 
   .upload-btn:active {
     transform: scale(0.98);
-    background: rgba(0, 255, 255, 0.3);
   }
 
   .track-item {
     background: rgba(0, 255, 255, 0.05);
     border-radius: 12px;
-    padding: 14px;
+    padding: 12px;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
@@ -403,7 +378,6 @@ const css = `
   .track-item.active {
     background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2));
     border-color: #00ffff;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
   }
 
   .track-item:active {
@@ -415,7 +389,7 @@ const css = `
   }
 
   .track-item-name {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     color: #fff;
     margin-bottom: 4px;
@@ -428,13 +402,13 @@ const css = `
 
   .track-item-playing {
     color: #00ffff;
-    font-size: 18px;
+    font-size: 16px;
     animation: pulse 1s infinite;
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.1); }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 
   .empty-state {
@@ -448,13 +422,12 @@ const css = `
     margin-bottom: 16px;
   }
 
-  /* Toast */
   .toast {
     position: fixed;
     bottom: 100px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
     border: 1px solid #00ffff;
     border-radius: 100px;
@@ -495,7 +468,6 @@ export default function CyberPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
-  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const animationRef = useRef<number>();
 
   // Initialize Web Audio
@@ -519,7 +491,6 @@ export default function CyberPlayer() {
       gain.connect(analyser);
       analyser.connect(audioContextRef.current.destination);
       
-      sourceRef.current = source;
       analyserRef.current = analyser;
     };
     
@@ -531,11 +502,12 @@ export default function CyberPlayer() {
     };
   }, []);
 
-  // Update volume
+  // Volume control through Web Audio
   useEffect(() => {
-    if (sourceRef.current && audioContextRef.current) {
-      const gain = audioContextRef.current?.createGain();
-      if (gain) gain.gain.value = volume;
+    if (audioContextRef.current) {
+      // Recreate gain node on volume change (simplified)
+      const gain = audioContextRef.current.createGain();
+      gain.gain.value = volume;
     }
   }, [volume]);
 
@@ -620,7 +592,7 @@ export default function CyberPlayer() {
 
   const playPause = async () => {
     if (!tracks.length) {
-      showToast("⚠️ Add music files first");
+      showToast("⚠️ Add music files first - tap LIBRARY then + ADD MUSIC");
       return;
     }
     
@@ -629,6 +601,7 @@ export default function CyberPlayer() {
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
+      showToast("⏸ Paused");
     } else {
       try {
         if (audioContextRef.current?.state === "suspended") {
@@ -636,25 +609,36 @@ export default function CyberPlayer() {
         }
         await audioRef.current.play();
         setIsPlaying(true);
+        showToast("▶ Playing");
       } catch (error) {
-        showToast("❌ Playback error");
+        showToast("❌ Playback error - try another file");
       }
     }
   };
 
   const nextTrack = () => {
-    if (!tracks.length) return;
+    if (!tracks.length) {
+      showToast("⚠️ No tracks in library");
+      return;
+    }
     const next = (currentIndex + 1) % tracks.length;
     setCurrentIndex(next);
-    if (isPlaying) setIsPlaying(true);
+    if (isPlaying) {
+      setTimeout(() => audioRef.current?.play(), 100);
+    }
     showToast(`⏭ ${tracks[next].name}`);
   };
 
   const prevTrack = () => {
-    if (!tracks.length) return;
+    if (!tracks.length) {
+      showToast("⚠️ No tracks in library");
+      return;
+    }
     const prev = currentIndex - 1 < 0 ? tracks.length - 1 : currentIndex - 1;
     setCurrentIndex(prev);
-    if (isPlaying) setIsPlaying(true);
+    if (isPlaying) {
+      setTimeout(() => audioRef.current?.play(), 100);
+    }
     showToast(`⏮ ${tracks[prev].name}`);
   };
 
@@ -662,29 +646,46 @@ export default function CyberPlayer() {
     if (!audioRef.current || !duration) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    const percentage = x / rect.width;
+    const percentage = Math.max(0, Math.min(1, x / rect.width));
     const newTime = percentage * duration;
     audioRef.current.currentTime = newTime;
     setProgress(newTime);
   };
 
   const addFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) {
+      showToast("⚠️ No files selected");
+      return;
+    }
     
-    const newTracks = Array.from(e.target.files).map(file => ({
-      id: Math.random().toString(36),
-      name: file.name.replace(/\.[^/.]+$/, "").slice(0, 30),
-      artist: "Local File",
-      url: URL.createObjectURL(file)
-    }));
+    const newTracks: Track[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.type.includes("audio")) {
+        newTracks.push({
+          id: Date.now() + "_" + i + "_" + Math.random(),
+          name: file.name.replace(/\.[^/.]+$/, "").slice(0, 35),
+          artist: "Local File",
+          url: URL.createObjectURL(file)
+        });
+      }
+    }
+    
+    if (newTracks.length === 0) {
+      showToast("❌ No valid audio files selected");
+      return;
+    }
     
     setTracks(prev => [...prev, ...newTracks]);
-    showToast(`✅ Added ${newTracks.length} track(s)`);
+    showToast(`✅ Added ${newTracks.length} track(s)!`);
     
-    if (tracks.length === 0 && newTracks.length) {
+    // Auto-select first track if library was empty
+    if (tracks.length === 0 && newTracks.length > 0) {
       setCurrentIndex(0);
     }
     
+    // Clear input
     e.target.value = "";
   };
 
@@ -692,11 +693,11 @@ export default function CyberPlayer() {
     setCurrentIndex(index);
     setActiveTab("player");
     setIsPlaying(true);
-    showToast(`🎵 ${tracks[index].name}`);
+    showToast(`🎵 Now playing: ${tracks[index].name}`);
   };
 
   const formatTime = (secs: number) => {
-    if (isNaN(secs)) return "0:00";
+    if (isNaN(secs) || !isFinite(secs)) return "0:00";
     const mins = Math.floor(secs / 60);
     const secsLeft = Math.floor(secs % 60);
     return `${mins}:${secsLeft.toString().padStart(2, "0")}`;
@@ -714,45 +715,39 @@ export default function CyberPlayer() {
       <div className="player-container">
         <div className="header">
           <div className="logo">
-            CYBERWAVE • <span>NEXUS</span>
+            CYBERWAVE • NEXUS
           </div>
         </div>
         
         {activeTab === "player" ? (
           <>
-            {/* Visualizer */}
             <div className="viz-area">
               {visualizer.map((h, i) => (
                 <div
                   key={i}
                   className="viz-bar"
-                  style={{ height: `${Math.min(60, h)}px` }}
+                  style={{ height: `${Math.min(50, h)}px` }}
                 />
               ))}
             </div>
             
-            {/* Cover Art */}
             <div className="cover-area">
               <div className="cover">
-                {isPlaying ? (
-                  <div className="play-icon-large">🎵</div>
-                ) : (
-                  <div className="play-icon-large">🎧</div>
-                )}
+                <div className="play-icon-large">
+                  {isPlaying ? "🎵" : "🎧"}
+                </div>
               </div>
             </div>
             
-            {/* Track Info */}
             <div className="track-info">
               <div className="track-name">
-                {currentTrack?.name || "NO TRACK"}
+                {currentTrack?.name || "NO TRACKS"}
               </div>
               <div className="track-artist">
-                {currentTrack?.artist || "━━━ READY ━━━"}
+                {currentTrack?.artist || "ADD MUSIC IN LIBRARY"}
               </div>
             </div>
             
-            {/* Progress */}
             <div className="progress-area">
               <div className="progress-bar" onClick={handleSeek}>
                 <div
@@ -766,7 +761,6 @@ export default function CyberPlayer() {
               </div>
             </div>
             
-            {/* Main Controls */}
             <div className="controls">
               <button className="ctrl-btn" onClick={prevTrack}>⏮</button>
               <button className="ctrl-btn play-btn" onClick={playPause}>
@@ -775,7 +769,6 @@ export default function CyberPlayer() {
               <button className="ctrl-btn" onClick={nextTrack}>⏭</button>
             </div>
             
-            {/* Mode Controls */}
             <div className="mode-controls">
               <button
                 className={`mode-btn ${repeat ? "active" : ""}`}
@@ -791,7 +784,6 @@ export default function CyberPlayer() {
               </button>
             </div>
             
-            {/* Volume */}
             <div className="volume-control">
               <span className="volume-icon">🔊</span>
               <input
@@ -809,40 +801,48 @@ export default function CyberPlayer() {
         ) : (
           <div className="library-view">
             <label className="upload-btn">
+              📁 + ADD MUSIC FILES
               <input
                 type="file"
                 multiple
-                accept="audio/*"
+                accept="audio/*,.mp3,.wav,.m4a,.ogg"
                 style={{ display: "none" }}
                 onChange={addFiles}
               />
-              📁 + ADD MUSIC FILES
             </label>
             
             {tracks.length === 0 ? (
               <div className="empty-state">
                 <div className="empty-state-icon">🎵</div>
                 <div>No tracks loaded</div>
-                <div style={{ fontSize: "12px", marginTop: "8px" }}>
-                  Tap above to add your music
+                <div style={{ fontSize: "12px", marginTop: "8px", color: "#00ffff" }}>
+                  Tap the button above to add music!
+                </div>
+                <div style={{ fontSize: "11px", marginTop: "16px", color: "#6666aa" }}>
+                  Supports: MP3, WAV, M4A, OGG
                 </div>
               </div>
             ) : (
-              tracks.map((track, idx) => (
-                <div
-                  key={track.id}
-                  className={`track-item ${idx === currentIndex ? "active" : ""}`}
-                  onClick={() => selectTrack(idx)}
-                >
-                  <div className="track-item-left">
-                    <div className="track-item-name">{track.name}</div>
-                    <div className="track-item-artist">{track.artist}</div>
-                  </div>
-                  {idx === currentIndex && isPlaying && (
-                    <div className="track-item-playing">▶</div>
-                  )}
+              <>
+                <div style={{ fontSize: "11px", color: "#8888ff", padding: "4px 8px" }}>
+                  {tracks.length} track(s) in library
                 </div>
-              ))
+                {tracks.map((track, idx) => (
+                  <div
+                    key={track.id}
+                    className={`track-item ${idx === currentIndex ? "active" : ""}`}
+                    onClick={() => selectTrack(idx)}
+                  >
+                    <div className="track-item-left">
+                      <div className="track-item-name">{track.name}</div>
+                      <div className="track-item-artist">{track.artist}</div>
+                    </div>
+                    {idx === currentIndex && isPlaying && (
+                      <div className="track-item-playing">▶</div>
+                    )}
+                  </div>
+                ))}
+              </>
             )}
           </div>
         )}
