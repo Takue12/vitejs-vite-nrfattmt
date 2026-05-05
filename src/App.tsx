@@ -8,448 +8,144 @@ interface Track {
 }
 
 const css = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-  
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-  }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-  body {
-    background: radial-gradient(ellipse at 20% 30%, #0a0a1f, #03030f);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-  }
+* { margin:0; padding:0; box-sizing:border-box; }
 
-  .app {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-  }
+body {
+  background: radial-gradient(ellipse at 20% 30%, #0a0a1f, #03030f);
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
 
-  .player-container {
-    width: 100%;
-    max-width: 420px;
-    height: 100%;
-    max-height: 750px;
-    background: rgba(8, 8, 20, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 32px;
-    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 255, 255, 0.3);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-  }
+.app {
+  width:100vw; height:100vh;
+  display:flex; align-items:center; justify-content:center;
+}
 
-  .player-container::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 32px;
-    padding: 2px;
-    background: linear-gradient(135deg, #00ffff, #ff00ff, #00ffff);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    opacity: 0.6;
-    animation: borderPulse 3s ease-in-out infinite;
-  }
+.player-container {
+  width:100%; max-width:420px; height:100%;
+  background: rgba(8,8,20,0.95);
+  border-radius:32px;
+  display:flex; flex-direction:column;
+  overflow:hidden;
+  position:relative;
+}
 
-  @keyframes borderPulse {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.8; }
-  }
+.player-container::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:32px;
+  padding:2px;
+  background: linear-gradient(135deg,#00f0ff,#8a2eff,#ff00cc,#00f0ff);
+  background-size:300% 300%;
+  animation:gradientShift 6s ease infinite;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+}
 
-  .header {
-    padding: 20px 24px 12px;
-    text-align: center;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-  }
+@keyframes gradientShift {
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
 
-  .logo {
-    font-size: 18px;
-    font-weight: 800;
-    background: linear-gradient(135deg, #00ffff, #ff00ff);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    letter-spacing: 2px;
-  }
+.header {
+  padding:20px;
+  text-align:center;
+  color:#00ffff;
+}
 
-  .viz-area {
-    height: 80px;
-    padding: 15px 20px 5px;
-    display: flex;
-    align-items: flex-end;
-    gap: 3px;
-  }
+.viz-area {
+  height:80px;
+  display:flex;
+  gap:3px;
+  padding:10px;
+}
 
-  .viz-bar {
-    flex: 1;
-    background: linear-gradient(180deg, #00ffff, #ff00ff);
-    border-radius: 3px;
-    transition: height 0.05s ease;
-    box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-  }
+.viz-bar {
+  flex:1;
+  background:linear-gradient(180deg,#00ffff,#ff00ff);
+  border-radius:3px;
+}
 
-  .cover-area {
-    flex-shrink: 0;
-    padding: 15px;
-    display: flex;
-    justify-content: center;
-  }
+.track-info { text-align:center; padding:10px; }
+.track-name { color:#fff; font-weight:700; }
+.track-artist { color:#888; font-size:12px; }
 
-  .cover {
-    width: 180px;
-    height: 180px;
-    background: linear-gradient(135deg, #1a1a3a, #0a0a2a);
-    border-radius: 24px;
-    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(0, 255, 255, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-  }
+.progress-bar {
+  height:4px;
+  background:#222;
+  margin:10px;
+  cursor:pointer;
+}
 
-  .cover::after {
-    content: '';
-    position: absolute;
-    width: 150%;
-    height: 150%;
-    background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
-    animation: shine 3s infinite;
-  }
+.progress-fill {
+  height:100%;
+  background:linear-gradient(90deg,#00ffff,#ff00ff);
+}
 
-  @keyframes shine {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-  }
+.controls {
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  padding:10px;
+}
 
-  .play-icon-large {
-    font-size: 48px;
-    color: rgba(0, 255, 255, 0.8);
-  }
+.ctrl-btn {
+  width:50px;height:50px;
+  border-radius:50%;
+  border:none;
+  background:#111;
+  color:#00ffff;
+  font-size:18px;
+}
 
-  .track-info {
-    text-align: center;
-    padding: 12px 20px;
-    flex-shrink: 0;
-  }
+.play-btn {
+  width:65px;height:65px;
+  background:linear-gradient(135deg,#00ffff,#ff00ff);
+  color:#fff;
+}
 
-  .track-name {
-    font-size: 20px;
-    font-weight: 800;
-    color: #fff;
-    margin-bottom: 6px;
-    letter-spacing: -0.5px;
-  }
+.library-view {
+  flex:1;
+  overflow:auto;
+  padding:10px;
+}
 
-  .track-artist {
-    font-size: 13px;
-    color: #8888ff;
-    font-weight: 500;
-  }
+.upload-btn {
+  border:2px dashed #00ffff;
+  padding:10px;
+  text-align:center;
+  cursor:pointer;
+  color:#00ffff;
+}
 
-  .progress-area {
-    padding: 12px 20px;
-    flex-shrink: 0;
-  }
+.track-item {
+  padding:10px;
+  margin-top:5px;
+  background:#111;
+  border-radius:10px;
+  cursor:pointer;
+  color:#fff;
+}
 
-  .progress-bar {
-    width: 100%;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    cursor: pointer;
-    position: relative;
-    margin-bottom: 8px;
-  }
+.nav-tabs {
+  display:flex;
+}
 
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #00ffff, #ff00ff);
-    border-radius: 4px;
-    position: relative;
-    transition: width 0.1s linear;
-  }
+.tab {
+  flex:1;
+  padding:10px;
+  text-align:center;
+  cursor:pointer;
+  color:#888;
+}
 
-  .progress-fill::after {
-    content: '';
-    position: absolute;
-    right: -6px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 12px;
-    height: 12px;
-    background: #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 10px #00ffff;
-  }
-
-  .time-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: #8888ff;
-    font-weight: 500;
-  }
-
-  .controls {
-    padding: 8px 20px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    flex-shrink: 0;
-  }
-
-  .ctrl-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: rgba(0, 255, 255, 0.1);
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    color: #00ffff;
-    font-size: 18px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .ctrl-btn:active {
-    transform: scale(0.92);
-    background: rgba(0, 255, 255, 0.3);
-  }
-
-  .play-btn {
-    width: 65px;
-    height: 65px;
-    background: linear-gradient(135deg, #00ffff, #ff00ff);
-    border: none;
-    color: #fff;
-    font-size: 26px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-  }
-
-  .mode-controls {
-    padding: 0 20px 12px;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-shrink: 0;
-  }
-
-  .mode-btn {
-    background: transparent;
-    border: none;
-    color: #6666aa;
-    font-size: 12px;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s;
-  }
-
-  .mode-btn.active {
-    color: #00ffff;
-  }
-
-  .volume-control {
-    padding: 6px 20px 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-  }
-
-  .volume-icon {
-    color: #8888ff;
-    font-size: 14px;
-  }
-
-  .volume-slider {
-    flex: 1;
-    height: 3px;
-    -webkit-appearance: none;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-  }
-
-  .volume-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
-    background: #00ffff;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-
-  .nav-tabs {
-    display: flex;
-    margin-top: auto;
-    border-top: 1px solid rgba(0, 255, 255, 0.2);
-    background: rgba(0, 0, 0, 0.3);
-    flex-shrink: 0;
-  }
-
-  .tab {
-    flex: 1;
-    padding: 12px;
-    text-align: center;
-    font-size: 12px;
-    font-weight: 600;
-    color: #6666aa;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .tab.active {
-    color: #00ffff;
-    background: rgba(0, 255, 255, 0.1);
-    border-top: 2px solid #00ffff;
-  }
-
-  .library-view {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .library-view::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  .library-view::-webkit-scrollbar-track {
-    background: rgba(0, 255, 255, 0.1);
-  }
-
-  .library-view::-webkit-scrollbar-thumb {
-    background: #00ffff;
-    border-radius: 4px;
-  }
-
-  .upload-btn {
-    background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2));
-    border: 2px dashed #00ffff;
-    border-radius: 16px;
-    padding: 14px;
-    text-align: center;
-    cursor: pointer;
-    color: #00ffff;
-    font-weight: 600;
-    font-size: 14px;
-    transition: all 0.2s;
-  }
-
-  .upload-btn:active {
-    transform: scale(0.98);
-  }
-
-  .track-item {
-    background: rgba(0, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid rgba(0, 255, 255, 0.1);
-  }
-
-  .track-item.active {
-    background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2));
-    border-color: #00ffff;
-  }
-
-  .track-item:active {
-    transform: scale(0.98);
-  }
-
-  .track-item-left {
-    flex: 1;
-  }
-
-  .track-item-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: #fff;
-    margin-bottom: 4px;
-  }
-
-  .track-item-artist {
-    font-size: 11px;
-    color: #8888ff;
-  }
-
-  .track-item-playing {
-    color: #00ffff;
-    font-size: 16px;
-    animation: pulse 1s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: #6666aa;
-  }
-
-  .empty-state-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
-  }
-
-  .toast {
-    position: fixed;
-    bottom: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(10px);
-    border: 1px solid #00ffff;
-    border-radius: 100px;
-    padding: 8px 20px;
-    color: #00ffff;
-    font-size: 12px;
-    font-weight: 600;
-    z-index: 1000;
-    animation: slideUp 0.3s ease;
-    white-space: nowrap;
-  }
-
-  @keyframes slideUp {
-    from {
-      transform: translateX(-50%) translateY(20px);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
-  }
+.tab.active {
+  color:#00ffff;
+}
 `;
 
 export default function CyberPlayer() {
@@ -457,250 +153,121 @@ export default function CyberPlayer() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeTab, setActiveTab] = useState("player");
-  const [visualizer, setVisualizer] = useState<number[]>(Array(24).fill(5));
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.8);
-  const [repeat, setRepeat] = useState(false);
-  const [shuffle, setShuffle] = useState(false);
-  const [toast, setToast] = useState("");
-  
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [visualizer, setVisualizer] = useState(Array(24).fill(5));
+
+  const audioRef = useRef<HTMLAudioElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
-  const animationRef = useRef<number>();
+  const gainRef = useRef<GainNode | null>(null);
 
-  // Initialize Web Audio
+  // LOAD SAVED TRACKS
   useEffect(() => {
-    if (!audioRef.current) return;
-    
-    const initAudio = async () => {
-      if (audioContextRef.current) return;
-      
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      audioContextRef.current = new AudioCtx();
-      
-      const source = audioContextRef.current.createMediaElementSource(audioRef.current);
-      const analyser = audioContextRef.current.createAnalyser();
-      const gain = audioContextRef.current.createGain();
-      
-      analyser.fftSize = 128;
-      gain.gain.value = volume;
-      
-      source.connect(gain);
-      gain.connect(analyser);
-      analyser.connect(audioContextRef.current.destination);
-      
-      analyserRef.current = analyser;
-    };
-    
-    initAudio();
-    
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-      if (audioContextRef.current) audioContextRef.current.close();
-    };
+    const saved = localStorage.getItem("cyber_tracks");
+    if (saved) {
+      try { setTracks(JSON.parse(saved)); } catch {}
+    }
   }, []);
 
-  // Volume control through Web Audio
+  // SAVE TRACKS
   useEffect(() => {
-    if (audioContextRef.current) {
-      // Recreate gain node on volume change (simplified)
-      const gain = audioContextRef.current.createGain();
-      gain.gain.value = volume;
-    }
+    localStorage.setItem("cyber_tracks", JSON.stringify(tracks));
+  }, [tracks]);
+
+  // INIT AUDIO
+  useEffect(() => {
+    if (!audioRef.current) return;
+
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    audioContextRef.current = ctx;
+
+    const source = ctx.createMediaElementSource(audioRef.current);
+    const analyser = ctx.createAnalyser();
+    const gain = ctx.createGain();
+
+    const bass = ctx.createBiquadFilter();
+    bass.type = "lowshelf";
+    bass.frequency.value = 200;
+    bass.gain.value = 5;
+
+    gain.gain.value = volume;
+
+    source.connect(bass);
+    bass.connect(gain);
+    gain.connect(analyser);
+    analyser.connect(ctx.destination);
+
+    analyserRef.current = analyser;
+    gainRef.current = gain;
+  }, []);
+
+  // VOLUME FIX
+  useEffect(() => {
+    if (gainRef.current) gainRef.current.gain.value = volume;
   }, [volume]);
 
-  // Visualizer loop
+  // VISUALIZER
   useEffect(() => {
-    if (!isPlaying || !analyserRef.current) {
-      setVisualizer(Array(24).fill(5));
-      return;
-    }
-    
-    const updateViz = () => {
-      if (!analyserRef.current || !isPlaying) return;
-      
-      const data = new Uint8Array(analyserRef.current.frequencyBinCount);
-      analyserRef.current.getByteFrequencyData(data);
-      
-      const heights = Array.from({ length: 24 }, (_, i) => {
-        const idx = Math.floor((i / 24) * data.length);
-        return Math.max(3, (data[idx] || 0) / 3);
-      });
-      
-      setVisualizer(heights);
-      animationRef.current = requestAnimationFrame(updateViz);
+    if (!isPlaying || !analyserRef.current) return;
+
+    const data = new Uint8Array(analyserRef.current.frequencyBinCount);
+
+    const loop = () => {
+      analyserRef.current!.getByteFrequencyData(data);
+      setVisualizer(Array.from(data.slice(0, 24), v => v / 4));
+      requestAnimationFrame(loop);
     };
-    
-    updateViz();
-    
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
+    loop();
   }, [isPlaying]);
 
-  // Audio event handlers
+  // TIME UPDATE
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    
-    const updateTime = () => {
+
+    const update = () => {
       setProgress(audio.currentTime);
       setDuration(audio.duration || 0);
     };
-    
-    const handleEnd = () => {
-      if (repeat) {
-        audio.currentTime = 0;
-        audio.play();
-      } else if (shuffle && tracks.length > 1) {
-        let newIndex;
-        do {
-          newIndex = Math.floor(Math.random() * tracks.length);
-        } while (newIndex === currentIndex);
-        setCurrentIndex(newIndex);
-        setTimeout(() => audio.play(), 100);
-      } else if (currentIndex < tracks.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-        setTimeout(() => audio.play(), 100);
-      } else {
-        setIsPlaying(false);
-      }
-    };
-    
-    audio.addEventListener("timeupdate", updateTime);
-    audio.addEventListener("ended", handleEnd);
-    
-    return () => {
-      audio.removeEventListener("timeupdate", updateTime);
-      audio.removeEventListener("ended", handleEnd);
-    };
-  }, [tracks, currentIndex, repeat, shuffle]);
 
-  // Auto-play when track changes
-  useEffect(() => {
-    if (audioRef.current && tracks[currentIndex] && isPlaying) {
-      audioRef.current.play().catch(console.log);
-    }
-  }, [currentIndex, tracks]);
-
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 2000);
-  };
+    audio.addEventListener("timeupdate", update);
+    return () => audio.removeEventListener("timeupdate", update);
+  }, []);
 
   const playPause = async () => {
-    if (!tracks.length) {
-      showToast("⚠️ Add music files first - tap LIBRARY then + ADD MUSIC");
-      return;
-    }
-    
-    if (!audioRef.current) return;
-    
+    if (!tracks.length) return;
+
     if (isPlaying) {
-      audioRef.current.pause();
+      audioRef.current?.pause();
       setIsPlaying(false);
-      showToast("⏸ Paused");
     } else {
-      try {
-        if (audioContextRef.current?.state === "suspended") {
-          await audioContextRef.current.resume();
-        }
-        await audioRef.current.play();
-        setIsPlaying(true);
-        showToast("▶ Playing");
-      } catch (error) {
-        showToast("❌ Playback error - try another file");
-      }
+      await audioRef.current?.play();
+      setIsPlaying(true);
     }
   };
 
-  const nextTrack = () => {
-    if (!tracks.length) {
-      showToast("⚠️ No tracks in library");
-      return;
-    }
-    const next = (currentIndex + 1) % tracks.length;
-    setCurrentIndex(next);
-    if (isPlaying) {
-      setTimeout(() => audioRef.current?.play(), 100);
-    }
-    showToast(`⏭ ${tracks[next].name}`);
-  };
-
-  const prevTrack = () => {
-    if (!tracks.length) {
-      showToast("⚠️ No tracks in library");
-      return;
-    }
-    const prev = currentIndex - 1 < 0 ? tracks.length - 1 : currentIndex - 1;
-    setCurrentIndex(prev);
-    if (isPlaying) {
-      setTimeout(() => audioRef.current?.play(), 100);
-    }
-    showToast(`⏮ ${tracks[prev].name}`);
-  };
-
-  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!audioRef.current || !duration) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const percentage = Math.max(0, Math.min(1, x / rect.width));
-    const newTime = percentage * duration;
-    audioRef.current.currentTime = newTime;
-    setProgress(newTime);
-  };
-
-  const addFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) {
-      showToast("⚠️ No files selected");
-      return;
-    }
-    
+  const addFiles = (files: FileList) => {
     const newTracks: Track[] = [];
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      if (file.type.includes("audio")) {
+
+    for (let f of Array.from(files)) {
+      if (f.type.includes("audio")) {
         newTracks.push({
-          id: Date.now() + "_" + i + "_" + Math.random(),
-          name: file.name.replace(/\.[^/.]+$/, "").slice(0, 35),
-          artist: "Local File",
-          url: URL.createObjectURL(file)
+          id: Date.now() + f.name,
+          name: f.name,
+          artist: "Local",
+          url: URL.createObjectURL(f)
         });
       }
     }
-    
-    if (newTracks.length === 0) {
-      showToast("❌ No valid audio files selected");
-      return;
-    }
-    
+
     setTracks(prev => [...prev, ...newTracks]);
-    showToast(`✅ Added ${newTracks.length} track(s)!`);
-    
-    // Auto-select first track if library was empty
-    if (tracks.length === 0 && newTracks.length > 0) {
+
+    if (!tracks.length && newTracks.length) {
       setCurrentIndex(0);
+      setIsPlaying(true);
     }
-    
-    // Clear input
-    e.target.value = "";
-  };
-
-  const selectTrack = (index: number) => {
-    setCurrentIndex(index);
-    setActiveTab("player");
-    setIsPlaying(true);
-    showToast(`🎵 Now playing: ${tracks[index].name}`);
-  };
-
-  const formatTime = (secs: number) => {
-    if (isNaN(secs) || !isFinite(secs)) return "0:00";
-    const mins = Math.floor(secs / 60);
-    const secsLeft = Math.floor(secs % 60);
-    return `${mins}:${secsLeft.toString().padStart(2, "0")}`;
   };
 
   const currentTrack = tracks[currentIndex];
@@ -708,158 +275,90 @@ export default function CyberPlayer() {
   return (
     <div className="app">
       <style>{css}</style>
-      
-      <audio ref={audioRef} src={currentTrack?.url} preload="auto" />
-      {toast && <div className="toast">{toast}</div>}
-      
+
+      <audio ref={audioRef} src={currentTrack?.url} />
+
       <div className="player-container">
-        <div className="header">
-          <div className="logo">
-            CYBERWAVE • NEXUS
-          </div>
-        </div>
-        
+        <div className="header">CYBER PLAYER</div>
+
         {activeTab === "player" ? (
           <>
             <div className="viz-area">
               {visualizer.map((h, i) => (
-                <div
-                  key={i}
-                  className="viz-bar"
-                  style={{ height: `${Math.min(50, h)}px` }}
-                />
+                <div key={i} className="viz-bar" style={{ height: h }} />
               ))}
             </div>
-            
-            <div className="cover-area">
-              <div className="cover">
-                <div className="play-icon-large">
-                  {isPlaying ? "🎵" : "🎧"}
-                </div>
-              </div>
-            </div>
-            
+
             <div className="track-info">
-              <div className="track-name">
-                {currentTrack?.name || "NO TRACKS"}
-              </div>
-              <div className="track-artist">
-                {currentTrack?.artist || "ADD MUSIC IN LIBRARY"}
-              </div>
+              <div className="track-name">{currentTrack?.name || "No Track"}</div>
+              <div className="track-artist">{currentTrack?.artist}</div>
             </div>
-            
-            <div className="progress-area">
-              <div className="progress-bar" onClick={handleSeek}>
-                <div
-                  className="progress-fill"
-                  style={{ width: `${(progress / duration) * 100 || 0}%` }}
-                />
-              </div>
-              <div className="time-info">
-                <span>{formatTime(progress)}</span>
-                <span>{formatTime(duration)}</span>
-              </div>
+
+            <div className="progress-bar"
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const pct = (e.clientX - rect.left) / rect.width;
+                if (audioRef.current) {
+                  audioRef.current.currentTime = pct * duration;
+                }
+              }}>
+              <div
+                className="progress-fill"
+                style={{ width: duration ? (progress / duration) * 100 + "%" : "0%" }}
+              />
             </div>
-            
+
             <div className="controls">
-              <button className="ctrl-btn" onClick={prevTrack}>⏮</button>
-              <button className="ctrl-btn play-btn" onClick={playPause}>
+              <button className="ctrl-btn" onClick={playPause}>
                 {isPlaying ? "⏸" : "▶"}
               </button>
-              <button className="ctrl-btn" onClick={nextTrack}>⏭</button>
             </div>
-            
-            <div className="mode-controls">
-              <button
-                className={`mode-btn ${repeat ? "active" : ""}`}
-                onClick={() => { setRepeat(!repeat); showToast(repeat ? "Repeat Off" : "Repeat On"); }}
-              >
-                🔁 REPEAT
-              </button>
-              <button
-                className={`mode-btn ${shuffle ? "active" : ""}`}
-                onClick={() => { setShuffle(!shuffle); showToast(shuffle ? "Shuffle Off" : "Shuffle On"); }}
-              >
-                🎲 SHUFFLE
-              </button>
-            </div>
-            
-            <div className="volume-control">
-              <span className="volume-icon">🔊</span>
-              <input
-                type="range"
-                className="volume-slider"
-                min={0}
-                max={1}
-                step={0.01}
-                value={volume}
-                onChange={(e) => setVolume(parseFloat(e.target.value))}
-              />
-              <span className="volume-icon">{Math.floor(volume * 100)}%</span>
-            </div>
+
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.01}
+              value={volume}
+              onChange={(e) => setVolume(parseFloat(e.target.value))}
+            />
           </>
         ) : (
-          <div className="library-view">
+          <div
+            className="library-view"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              addFiles(e.dataTransfer.files);
+            }}
+          >
             <label className="upload-btn">
-              📁 + ADD MUSIC FILES
+              + ADD MUSIC
               <input
                 type="file"
                 multiple
-                accept="audio/*,.mp3,.wav,.m4a,.ogg"
-                style={{ display: "none" }}
-                onChange={addFiles}
+                hidden
+                onChange={(e) => e.target.files && addFiles(e.target.files)}
               />
             </label>
-            
-            {tracks.length === 0 ? (
-              <div className="empty-state">
-                <div className="empty-state-icon">🎵</div>
-                <div>No tracks loaded</div>
-                <div style={{ fontSize: "12px", marginTop: "8px", color: "#00ffff" }}>
-                  Tap the button above to add music!
-                </div>
-                <div style={{ fontSize: "11px", marginTop: "16px", color: "#6666aa" }}>
-                  Supports: MP3, WAV, M4A, OGG
-                </div>
+
+            {tracks.map((t, i) => (
+              <div key={t.id} className="track-item" onClick={() => {
+                setCurrentIndex(i);
+                setActiveTab("player");
+                setIsPlaying(true);
+              }}>
+                {t.name}
               </div>
-            ) : (
-              <>
-                <div style={{ fontSize: "11px", color: "#8888ff", padding: "4px 8px" }}>
-                  {tracks.length} track(s) in library
-                </div>
-                {tracks.map((track, idx) => (
-                  <div
-                    key={track.id}
-                    className={`track-item ${idx === currentIndex ? "active" : ""}`}
-                    onClick={() => selectTrack(idx)}
-                  >
-                    <div className="track-item-left">
-                      <div className="track-item-name">{track.name}</div>
-                      <div className="track-item-artist">{track.artist}</div>
-                    </div>
-                    {idx === currentIndex && isPlaying && (
-                      <div className="track-item-playing">▶</div>
-                    )}
-                  </div>
-                ))}
-              </>
-            )}
+            ))}
           </div>
         )}
-        
+
         <div className="nav-tabs">
-          <div
-            className={`tab ${activeTab === "player" ? "active" : ""}`}
-            onClick={() => setActiveTab("player")}
-          >
-            🎧 PLAYER
-          </div>
-          <div
-            className={`tab ${activeTab === "library" ? "active" : ""}`}
-            onClick={() => setActiveTab("library")}
-          >
-            📚 LIBRARY
-          </div>
+          <div className={`tab ${activeTab==="player"?"active":""}`}
+            onClick={()=>setActiveTab("player")}>PLAYER</div>
+          <div className={`tab ${activeTab==="library"?"active":""}`}
+            onClick={()=>setActiveTab("library")}>LIBRARY</div>
         </div>
       </div>
     </div>
